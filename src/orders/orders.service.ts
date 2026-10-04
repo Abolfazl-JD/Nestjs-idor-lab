@@ -16,11 +16,11 @@ export class OrdersService {
     return this.orderRepository.find({ where: { userId } });
   }
 
-  // INTENTIONALLY VULNERABLE FOR UNIVERSITY IDOR LAB
-  // Authentication is checked, but resource ownership is not checked.
+  // Secure implementation:
+  // The resource is queried using both the resource ID and authenticated owner ID.
   async findOneForUser(id: number, userId: number): Promise<Order> {
     const order = await this.orderRepository.findOne({
-      where: { id },
+      where: { id, userId },
     });
     if (!order) {
       throw new NotFoundException('Order not found');
